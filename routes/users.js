@@ -100,9 +100,7 @@ router.post("/token", async (req, res) => {
         const token = req.header("x-auth-token");
         if(!token) return res.json(false);
         //if present
-        console.log("BOOBIES");
         const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-        console.log('again stuck')
         if(!decoded) return res.json(false);
         //also check for user
         const user = await User.findById(decoded.id);
