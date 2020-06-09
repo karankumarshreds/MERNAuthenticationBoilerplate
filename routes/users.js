@@ -75,7 +75,7 @@ router.post("/login", [
             process.env.JWT_SECRET,
             { expiresIn : '1h' }
         );
-        res.status(200).json(token);
+        res.status(200).json({token: token, user: user});
     } catch (error) {
         res.status(500).json({err: "Internal server error"});
     };
@@ -103,10 +103,10 @@ router.post("/token", async (req, res) => {
         const decoded = await jwt.verify(token, process.env.JWT_SECRET);
         if(!decoded) return res.json(false);
         //also check for user
-        const user = await User.findById(decoded.id);
+        const user = await User.findById(decoded.id).select('-password');
         if(!user) return res.json(false);
-        //if valid
-        return res.json(true);
+        //if valid, return the user data
+        return res.json(user);
     } catch (error) {
         res.json(false);
     }
