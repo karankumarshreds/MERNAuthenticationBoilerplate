@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth');
 //to validate incoming data
 const { check, validationResult } = require('express-validator');
 
@@ -77,6 +78,39 @@ router.post("/login", [
         res.status(200).json(token);
     } catch (error) {
         res.status(500).json({err: "Internal server error"});
+    };
+});
+
+router.delete("/delete", auth, async (req, res) => {
+    const id = req.userID;
+    try {
+        const deleteUser = await User.findByIdAndDelete(id);
+        if(deleteUser === null){
+            return res.status(500).json({err: "Invalid request"});
+        };
+        res.status(201).json({response: "Account deleted"});    
+    } catch (error) {
+        res.status(500).json({err: "Invalid request"});
+    }
+});
+
+//for frontend validation
+router.post("/token", async (req, res) => {
+    try {
+        const token = req.header("x-auth-token");
+        if(!token) return res.json(false);
+        //if present
+        console.log("BOOBIES");
+        const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+        console.log('again stuck')
+        if(!decoded) return res.json(false);
+        //also check for user
+        const user = await User.findById(decoded.id);
+        if(!user) return res.json(false);
+        //if valid
+        return res.json(true);
+    } catch (error) {
+        res.json(false);
     }
 })
 
