@@ -106,7 +106,7 @@ router.post("/token", async (req, res) => {
         const user = await User.findById(decoded.id).select('-password');
         if(!user) return res.json(false);
         //if valid, return the user data
-        return res.json(user);
+        return res.json(user); 
     } catch (error) {
         res.json(false);
     }
