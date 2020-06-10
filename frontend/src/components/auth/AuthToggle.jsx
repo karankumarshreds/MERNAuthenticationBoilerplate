@@ -15,7 +15,7 @@ const AuthToggle = () => {
     }
     const redirect = (e) => {
         //incase of logout
-        if(`${e.target.name}` == '/') logout();
+        if(`${e.target.name}` === '/') logout();
         //common for all
         history.push(`${e.target.name}`);
     }

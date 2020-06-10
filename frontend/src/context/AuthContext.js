@@ -19,13 +19,12 @@ const AuthContextProvider = (props) => {
                 localStorage.setItem("auth-token", "");
                 token = "";
             }
-            //need to validate the token
+            //need to validate the token if it exists
             const tokenResponse = await axios.post(url, null, {
                 headers: { "x-auth-token": token }
             });
             //if token is valid, collect user data 
             if(tokenResponse.data){
-                console.log(tokenResponse.data);
                 setUserData({
                     token,
                     user: tokenResponse.data
@@ -34,6 +33,7 @@ const AuthContextProvider = (props) => {
         }
         checkLoggedIn();                
     }, []);
+
     return (
         <AuthContext.Provider value={{userData, setUserData}}>
             {props.children}

@@ -26,7 +26,8 @@ router.post("/signup", [
         //check if email already exists
         const existingUser = await User.findOne({ email : email });
         if (existingUser) {
-            return res.status(400).json({err: "Account with email already exists"});
+            // return res.send('Already exists')
+            return res.status(401).json({err: "Account with email already exists"});
         };
         const hashGen = async () => {
             const hashedPassword = await new Promise((resolve, reject) => {
