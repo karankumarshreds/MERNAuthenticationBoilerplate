@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
 //to validate incoming data
 const { check, validationResult } = require('express-validator');
+const passwordResetEmail = require('./email');
 
 
 router.post("/signup", [
@@ -111,6 +112,68 @@ router.post("/token", async (req, res) => {
     } catch (error) {
         res.json(false);
     }
-})
+});
+
+//for password reset email request
+router.post("/forgot-password", async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({email: email});
+        if (!user) {
+            return res.status(400).json({err: "Invalid email address"});
+        } 
+        const token = jwt.sign(
+            { id : user._id },
+            process.env.JWT_SECRET_RESET,
+            { expiresIn : '10m' }
+        );
+        await user.updateOne({resetToken : token});
+        passwordResetEmail(email, token);
+        return res.status(200).json({response: "Password reset email sent"});
+    } catch (error) {
+        return res.status(500).json({err: "Internal server error"});
+    };
+});
+
+//after user resets and submits the new password
+router.post("/reset-password/:token", async (req, res) => {
+    const token = req.params.token;
+    const {password} = req.body;
+    if (!token || !password) {
+        return res.status(400).json({err: "Invalid request"});
+    };
+    try {
+        jwt.verify(token, process.env.JWT_SECRET_RESET, function(jwtError, decodedData) {
+            if (jwtError) {
+                return res.status(400).json({err: "Token expired"})
+            }
+        });
+        const user = await User.findOne({ resetToken: token });
+        if (!user) {
+            return res.status(400).json({err: "User not found"});
+        };
+        const hashGen = async () => {
+            const hashedPassword = await new Promise((resolve, reject) => {
+                bcrypt.hash(password, 10, (err, hash) => {
+                    if(!err) {
+                        return resolve(hash);
+                    };
+                });
+            });
+            return hashedPassword;
+        }
+        const hashedPassword = await hashGen();
+        try {
+            
+            const passwordResetDone = await User.findByIdAndUpdate(user._id, {password: hashedPassword});
+            if (passwordResetDone) {
+                return res.status(200).json({response: "Password reset done"});
+            }
+        } catch (errorUpdatingPass) {
+        }
+    } catch (error) {
+        res.status(500).json({err: "Internal server error"});
+    }
+});
 
 module.exports = router;

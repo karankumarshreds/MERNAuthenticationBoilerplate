@@ -16,7 +16,7 @@ const AuthToggle = () => {
     const redirect = (e) => {
         //incase of logout
         if(`${e.target.name}` === '/') logout();
-        //common for all
+        //common for all:redirects to the name of button
         history.push(`${e.target.name}`);
     }
     return (
@@ -29,7 +29,7 @@ const AuthToggle = () => {
                 <button onClick={redirect} name="/register">register</button> </> 
             }
         </div>
-    )
-}
+    );
+};
 
 export default AuthToggle;
