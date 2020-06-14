@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState();
@@ -39,6 +39,7 @@ const Login = () => {
             <input onChange={(e) => setEmail(e.target.value)} name="email" type="email"/>
             <input onChange={(e) => setPassword(e.target.value)} name="password" type="password" />
             <button type="submit">Login</button>
+            <Link to="forgot-password">Forgot Password?</Link>
             </form>
         </div>
     )
