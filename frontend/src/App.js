@@ -7,6 +7,7 @@ import Login from './components/auth/Login';
 import Header from './components/layout/Header';
 import AuthContextProvider from './context/AuthContext';
 import ForgotPassword from './components/auth/ForgotPassword';
+import ResetPassword from './components/auth/ResetPassword';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route exact path="/login" render={() => <Login />}/>
           <Route exact path="/register" render={() => <Register />}/>
           <Route exact path="/forgot-password" render={() => <ForgotPassword />}/>
+          <Route exact path="/password-reset/:id" render={(props) => <ResetPassword token={props}/>}/>
         </Switch>
       </AuthContextProvider>
     </BrowserRouter>

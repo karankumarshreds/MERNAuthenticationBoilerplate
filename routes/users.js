@@ -99,6 +99,14 @@ router.delete("/delete", auth, async (req, res) => {
 //for frontend validation
 router.post("/token", async (req, res) => {
     try {
+
+// client.messages
+//   .create({
+//      body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+//      from: '+15017122661',
+//      to: '+917042815615'
+//    })
+//   .then(message => console.log(message.sid));
         const token = req.header("x-auth-token");
         if(!token) return res.json(false);
         //if present
@@ -175,5 +183,8 @@ router.post("/reset-password/:token", async (req, res) => {
         res.status(500).json({err: "Internal server error"});
     }
 });
+
+
+
 
 module.exports = router;
