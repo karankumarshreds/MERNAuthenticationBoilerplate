@@ -18,7 +18,7 @@
     "fast-two-sms": "^2.0.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.18",
-    "nodemailer": "^6.4.8",
+    "nodemailer": "^6.4.16",
     "nodemon": "^2.0.4"
   }
 }
